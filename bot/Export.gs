@@ -7,7 +7,7 @@ function sendImageToTelegram(telegram, sheetName, range, data) {
   var file_name = sheet.getName().split("~")[0]
   var url = generatePDFExportURL(sheet)
 
-  var pdf = UrlFetchApp.fetch(
+  let originalPDF = UrlFetchApp.fetch(
     url,
     {
       headers: {
@@ -16,10 +16,60 @@ function sendImageToTelegram(telegram, sheetName, range, data) {
     }
   ).getBlob().setName(`${file_name}.pdf`)
 
-  telegram.sendDocument({ documentFile: pdf })
+  let pdf2PNGUser = new PDF2PNGUserTable().getRandomUser()
 
-  var formData = {
-    "instructions": JSON.stringify({
+  let watermarkPDF = UrlFetchApp.fetch(
+    PropertiesService.getScriptProperties().getProperty(`PDF_2_PNG_BASE_URL`),
+    {
+      headers: {
+        authorization: `Bearer ${pdf2PNGUser.api_key}`
+      },
+      method: "POST",
+      payload: {
+        "instructions": JSON.stringify({
+          "parts": [
+            {
+              "file": "document"
+            }
+          ],
+          "actions": [
+            {
+              "type": "watermark",
+              "text": "PUB Share - SG [Bot]",
+              "right": "98%",
+              "bottom": "98%",
+              "opacity": 0.5,
+              "fontSize": 50,
+              "fontColor": "#FF0000",
+              "fontStyle": [
+                "italic",
+                "bold"
+              ],
+              "fontFamily": "Helvetica",
+              "width": 150,
+              "height": 20
+            }
+          ]
+        }),
+        "document": originalPDF
+      },
+      muteHttpExceptions: true
+    }
+  )
+
+  let isSuccess = false
+
+  try {
+    let jsonResponse = JSON.parse(watermarkPDF.getContentText())
+    console.log(jsonResponse)
+    isSuccess = false
+  } catch (err) {
+    isSuccess = true
+  }
+
+  let newPDF = originalPDF
+  let formData = {
+    "instructions": {
       "parts": [
         {
           "file": "document"
@@ -30,11 +80,36 @@ function sendImageToTelegram(telegram, sheetName, range, data) {
         "format": "png",
         "dpi": 500
       }
-    }),
-    document: pdf
+    }
   }
 
-  let pdf2PNGUser = new PDF2PNGUserTable().getRandomUser()
+  if (isSuccess) {
+    newPDF = watermarkPDF.getBlob().setName(`${file_name}.pdf`)
+  } else {
+    formData.instructions["actions"] = [
+      {
+        "type": "watermark",
+        "text": "PUB Share - SG [Bot]",
+        "right": "98%",
+        "bottom": "98%",
+        "opacity": 0.5,
+        "fontSize": 50,
+        "fontColor": "#FF0000",
+        "fontStyle": [
+          "italic",
+          "bold"
+        ],
+        "fontFamily": "Helvetica",
+        "width": 150,
+        "height": 20
+      }
+    ]
+  }
+
+  telegram.sendDocument({ documentFile: newPDF })
+
+  formData["document"] = newPDF
+  formData.instructions = JSON.stringify(formData.instructions)
 
   const pdf2PNGResponse = UrlFetchApp.fetch(
     PropertiesService.getScriptProperties().getProperty(`PDF_2_PNG_BASE_URL`),
@@ -48,7 +123,7 @@ function sendImageToTelegram(telegram, sheetName, range, data) {
     }
   )
 
-  let isSuccess = false
+  isSuccess = false
   try {
     let jsonResponse = JSON.parse(pdf2PNGResponse.getContentText())
     console.log(jsonResponse)

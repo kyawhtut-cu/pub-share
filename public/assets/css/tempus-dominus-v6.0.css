@@ -1,0 +1,11 @@
+.calendar-header .previous {
+	padding: 8px 0px 0px 20px!important;
+}
+
+.calendar-header .picker-switch {
+	padding: 8px 0px;
+}
+
+.calendar-header .next {
+	padding: 8px 20px 0px 0px!important;
+}

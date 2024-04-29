@@ -1,0 +1,80 @@
+:root {
+	--default-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+	--block-bg-color: var(--tg-theme-bg-color);
+	--bg-color: var(--tg-theme-bg-color);
+	--animation: .15s ease;
+	--page-animation-duration: .3s;
+	--page-animation: var(--page-animation-duration) ease;
+	--status-height: 48px;
+	--accent-color: #ff0303;
+	--main-color: #f8a917;
+	--text-color: var(--tg-theme-text-color);
+	--page-hint-color: #83878a;
+	--hint-color: #74787a;
+	--placeholder-color: #999da1;
+	--secondary-text-color: var(--tg-theme-hint-color);
+}
+
+.back-button {
+	position: fixed;
+	top: 0;
+	left: 0;
+	display: flex;
+	width: 56px;
+	height: 56px;
+	color: var(--secondary-text-color);
+	font-size: 24px;
+	justify-content: center;
+	text-align: center;
+	align-items: center;
+	cursor: pointer;
+}
+
+.main-button {
+	z-index: 1;
+	width: 100%;
+	position: fixed;
+	padding: 0 .5rem;
+	bottom: 0;
+	text-align: center;
+}
+
+.main-button button {
+	margin: 0.5rem 0;
+	width: 100%;
+	border-radius: 10px;
+	height: 44px;
+	padding: 0 1.0625rem;
+	transition: .2s opacity;
+	font-weight: 500;
+	position: relative;
+	overflow: hidden;
+	transition: background 400ms;
+	color: white;
+	background-color: var(--accent-color);
+	font-family: var(--default-font);
+	font-size: 1.5rem;
+	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.3);
+	cursor: pointer;
+	text-transform: uppercase;
+	border-style: none;
+}
+
+span.ripple {
+	position: absolute;
+	border-radius: 50%;
+	transform: scale(0);
+	animation: ripple 600ms linear;
+	background-color: rgba(255, 255, 255, 0.7);
+}
+
+@keyframes ripple {
+	to {
+		transform: scale(4);
+		opacity: 0;
+	}
+}
+
+.modal-header h1 {
+	margin: unset!important;
+}

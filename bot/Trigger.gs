@@ -14,7 +14,7 @@ function createTriggerForGenerate(user_id, data) {
     user = new UserTable().updateUserCredit(telegram.chat_id, -1)
 
     response = telegram.sendMessage({
-      text: `သင်၏ အချက်အလက်များကို စတင်ဆောင်ရွက်နေပါသည်။ ပြီးဆုံးပါက ပြန်လည်ပို့ဆောင်ပေးပါမည်။`
+      text: `သင်၏ အချက်လက်များကို ရရှိပါပြီ။ မကြာခင် စတင်ဆောင်ရွက်ပါမည်။ ပြီးဆုံးပါက ပြန်လည်ပို့ဆောင်ပေးပါမည်။`
     })
 
     let startDate = new Date()

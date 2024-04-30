@@ -153,18 +153,24 @@ function generateTemplate(sheetName, data) {
   displayAmmountSummary(copySheet, longTermFee, perPaxFee, totalDayOfShortTerm)
 
   // display long term ppl
-  let lastPositionForLongTerm = displayLongTermPpl(
+  let lastPositionForLongTerm = 18
+  if(longTermList.length > 0) {
+     lastPositionForLongTerm =displayLongTermPpl(
     copySheet,
     longTermList,
     longTermFee * totalDay
   )
+  }
 
   // display short term ppl
-  let lastPositionForShortTerm = displayShortTermPpl(
-    copySheet,
-    shortTermList,
-    perPaxFee
-  )
+  let lastPositionForShortTerm = 18
+  if (shortTermList.length > 0) {
+    lastPositionForShortTerm = displayShortTermPpl(
+      copySheet,
+      shortTermList,
+      perPaxFee
+    )
+  }
 
   let range = `B2:U${lastPositionForLongTerm}`
 

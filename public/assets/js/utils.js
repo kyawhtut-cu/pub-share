@@ -12,13 +12,13 @@
 
 	const getParameter = (key) => {
 		key = key.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]")
-		var regx = new RegExp("[\\?&]" + key + "=([^&#]*)")
+		let regx = new RegExp("[\\?&]" + key + "=([^&#]*)")
 		let results = regx.exec(location.search)
 		return results === null ? `` : decodeURIComponent(results[1].replace(/\+/g, " "))
 	}
 
 	const rgbToHex = (rgb) => {
-		if (rgb.search("rgb") == -1)
+		if (rgb.search("rgb") === -1)
 			return rgb
 		else {
 			rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);

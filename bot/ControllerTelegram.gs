@@ -39,7 +39,9 @@ class TelegramController {
     let telegram = createTelegramApp(PropertiesService.getScriptProperties().getProperty("TELEGRAM_BOT_ID"))
     telegram.setRequest(e)
 
-    Logger.log(JSON.stringify(e))
+    if (telegram.isTelegramRequest()) {
+      Logger.log(JSON.stringify(e))
+    }
 
     this.Telegram = telegram
   }

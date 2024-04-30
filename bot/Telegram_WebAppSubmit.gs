@@ -20,7 +20,8 @@ class TelegramWebAppSubmit {
 
       if (user.credit <= 0) {
         response = telegram.sendMessage({
-          text: `သင့်တွင် <b>Credit 0</b> ဖြစ်နေသည့်အတွက် ဤလုပ်ဆောင်မှုကိုလုပ်ဆောင်၍ မရနိုင်ပါ။ ကျေးဇူးပြု၍ Credit ကို Topup လုပ်ပေးပါ။`
+          text: `သင့်တွင် <b>Credit 0</b> ဖြစ်နေသည့်အတွက် ဤလုပ်ဆောင်မှုကိုလုပ်ဆောင်၍ မရနိုင်ပါ။ ကျေးဇူးပြု၍ Credit ကို Topup လုပ်ပေးပါ။`,
+          reply_markup: createKeyboard().buttons([keyUrl("Topup လုပ်ဖို့ ဆက်သွယ်ရန်", "tg://user?id=5440573899")]).inline()
         })
       } else {
         user = new UserTable().updateUserCredit(telegram.chat_id, -1)

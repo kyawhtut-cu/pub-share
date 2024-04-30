@@ -83,16 +83,19 @@ function generateTemplate(sheetName, data) {
     totalDay = parseInt(new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate())
   }
 
+  let longTermList = data.long_term_list ?? []
+  let shortTermList = data.short_term_list ?? []
+
   let total = data.pub_amount + data.internet_amount
-  let numberOfPpl = data.long_term_list.length + data.short_term_list.length
+  let numberOfPpl = longTermList.length + shortTermList.length
   let perPaxFee = total / (numberOfPpl * totalDay)
   let shortTermTotalFee = 0
-  let totalDayOfShortTerm = data.short_term_list.map(ppl => {
+  let totalDayOfShortTerm = shortTermList.map(ppl => {
     let day = dateRange(ppl.date.split("\n")[0], ppl.date.split("\n")[1])
     shortTermTotalFee += day.length * perPaxFee
     return day
   }).flatMap((arr) => arr.map(date => date.getTime())).filter((date, index, array) => array.indexOf(date) === index).length
-  let longTermFee = (total - shortTermTotalFee) / (totalDay * data.long_term_list.length)
+  let longTermFee = (total - shortTermTotalFee) / (totalDay * longTermList.length)
   let header = date.toLocaleDateString(
     'en-GB',
     {
@@ -144,7 +147,7 @@ function generateTemplate(sheetName, data) {
   displayFeeSummary(copySheet, header, data.pub_amount, data.internet_amount)
 
   // display summary
-  displaySummary(copySheet, perPaxFee, data.long_term_list.length, data.short_term_list.length)
+  displaySummary(copySheet, perPaxFee, longTermList.length, shortTermList.length)
 
   // display summary amount
   displayAmmountSummary(copySheet, longTermFee, perPaxFee, totalDayOfShortTerm)
@@ -152,14 +155,14 @@ function generateTemplate(sheetName, data) {
   // display long term ppl
   let lastPositionForLongTerm = displayLongTermPpl(
     copySheet,
-    data.long_term_list,
+    longTermList,
     longTermFee * totalDay
   )
 
   // display short term ppl
   let lastPositionForShortTerm = displayShortTermPpl(
     copySheet,
-    data.short_term_list,
+    shortTermList,
     perPaxFee
   )
 

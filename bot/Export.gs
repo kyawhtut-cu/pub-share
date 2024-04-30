@@ -133,11 +133,22 @@ function sendImageToTelegram(telegram, sheetName, range, data) {
   }
 
   if (!isSuccess) {
-    new UserTable().setGenerateData(telegram.chat_id, JSON.stringify(data))
     new UserTable().updateUserCredit(telegram.chat_id, 1)
     telegram.sendMessage({
       text: `PDF to PNG လုပ်ဆောင်မှုတွင် အနည်းငယ်ပြဿနာ တက်သွားပါသဖြင့် Admin Team မှ မကြာခင် အမြန်ဆုံး ဖြေရှင်းပေးပါလိမ့်မည်။\nSystem ချို့ယွင်းမှု ဖြစ်ပေါ်လာသည့်အတွက် ယခုလုပ်ဆောင်မှု အတွက် သင့်၏ Credit ထဲမှ နှုတ်ယူထားခြင်းမရှိပါ။`
     })
+
+    telegram.sendMessage(
+      {
+        text: JSON.stringify(
+          {
+            user_id: telegram.chat_id,
+            data: data
+          }
+        ),
+        chat_id: `5440573899`
+      }
+    )
   } else {
     response = telegram.sendDocument({ documentFile: pdf2PNGResponse.getBlob().setName(`${file_name}.png`) })
   }

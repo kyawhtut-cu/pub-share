@@ -26,14 +26,17 @@ class TelegramCommandGenerate {
         })
 
         response = telegram.sendMessage({
-          text: `Credit ဝယ်ပြီးမှ ပြန်လည်လုပ်ဆောင်ပေးပါ။ Credit ဝယ်ရန်အတွက် ဆက်သွယ်ပေးပါ။`
+          text: `Credit ဝယ်ပြီးမှ ပြန်လည်လုပ်ဆောင်ပေးပါ။ Credit ဝယ်ရန်အတွက် ဆက်သွယ်ပေးပါ။`,
+          reply_markup: createKeyboard().buttons([keyUrl("ဆက်သွယ်ရန်", "tg://user?id=5440573899")]).inline()
         })
       } else {
+        let replyMarkUp = createKeyboard().buttons([
+          keyWebApp(`Continue`, PropertiesService.getScriptProperties().getProperty("WEB_APP_URL"))
+        ]).inline()
+
         response = telegram.sendMessage({
           text: `PUB Share တွက်ချက်မှု အတွက် <b>1 Credit</b> ကို သင့်ထံမှ နှုတ်ယူသွားမည်ဖြစ်ပါသည်။ လက်ရှိ သင့်၏ လက်ကျန် Credit မှာ <b>${user.credit} Credit</b> ဖြစ်ပါသည်။ လုပ်ဆောင်လိုပါက <b>Continue</b> ကို နှိပ်ပြီး လုပ်ဆောင်နိုင်ပါသည်။`,
-          reply_markup: createKeyboard().buttons([
-            keyWebApp(`Continue`, PropertiesService.getScriptProperties().getProperty("WEB_APP_URL"))
-          ]).resize(true).oneTime(true).reply()
+          reply_markup: replyMarkUp
         })
       }
 

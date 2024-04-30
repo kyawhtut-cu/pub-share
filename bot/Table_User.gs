@@ -19,6 +19,9 @@ class UserTable {
   }
 
   createUser(userId, userName, userDisplayName) {
+    if (userName == `` || userName == null) {
+      userName = `${userId}`
+    }
     let user = this.Table.create({
       user_id: userId,
       user_name: userName,
@@ -39,7 +42,7 @@ class UserTable {
 
     if (user != null) {
       user.credit += credit
-      user.update_date = new Date()
+      user.updated_date = new Date()
       user.save()
     }
 
@@ -47,15 +50,5 @@ class UserTable {
     delete user.errors
 
     return user
-  }
-
-  setGenerateData(userId, data) {
-    let user = this.Table.where({ user_id: parseInt(userId) }).first()
-
-    if (user != null) {
-      user.generate_data = data
-      user.update_date = new Date()
-      user.save()
-    }
   }
 }

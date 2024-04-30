@@ -16,6 +16,7 @@ class TelegramCommandBuyCredit {
 
     response = telegram.sendMessage({
       text: `Credit ဝယ်ရန် အတွက် ဆက်သွယ်ပေးပါ။`,
+      reply_markup: createKeyboard().buttons([keyUrl("ဆက်သွယ်ရန်", "tg://user?id=5440573899")]).inline()
     })
 
     if (telegram.DEBUG) console.log(response)

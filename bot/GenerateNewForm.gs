@@ -1,10 +1,15 @@
 function generateForTelegramUser(telegram, userId, data) {
-  let sheetName = new Date(data.pub_date).toLocaleDateString(
-    'en-GB',
+  let sheetName = `${stringToDate(data.pub_start_date, "dd-mm-yyyy", `-`).toLocaleDateString(
+    `en-GB`,
     {
-      month: 'long', year: 'numeric'
+      day: `2-digit`, month: `long`, year: `numeric`
     }
-  )
+  )} - ${stringToDate(data.pub_end_date, "dd-mm-yyyy", `-`).toLocaleDateString(
+    `en-GB`,
+    {
+      day: `2-digit`, month: `long`, year: `numeric`
+    }
+  )}`
 
   let user = new UserTable().getUserById(userId)
   sheetName += `~[${user.user_name}]`

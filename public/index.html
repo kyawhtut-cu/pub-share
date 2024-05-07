@@ -782,8 +782,16 @@
 
             let data = {
                 generate_title: pubGenerateTemplateTitle,
-                pub_start_date: pubStartDate,
-                pub_end_date: pubEndDate,
+                pub_start_date: pubStartDate.toLocaleString('default', {
+                    day: `2-digit`,
+                    month: '2-digit',
+                    year: 'numeric'
+                }).replaceAll(`/`, `-`),
+                pub_end_date: pubEndDate.toLocaleString('default', {
+                    day: `2-digit`,
+                    month: '2-digit',
+                    year: 'numeric'
+                }).replaceAll(`/`, `-`),
                 pub_amount: pubTotalAmount,
                 internet_amount: internetAmount,
                 postal_code: postalCode,

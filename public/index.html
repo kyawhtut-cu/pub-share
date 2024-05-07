@@ -72,15 +72,32 @@
          style="height: 160px; text-align: center; color: white; font-size: 2rem; align-items: center; display: grid;">
         Welcome From PUB Share - SG
     </div>
-    <div class="p-3 pt-0">
-        <div class="material-input-group-read-only mt-5" id="pub_date" data-td-target-input="nearest"
-             data-td-target-toggle="nearest">
-            <label>Select Date</label>
-            <input class="d-none" type="text" placeholder="MMMM YYYY" data-td-target="#pub_date">
-            <input disabled type="text" placeholder="MMMM YYYY" id="pub_date_input">
-            <i class="fa-solid fa-calendar"></i>
-            <div style="position: absolute; top: 4px; width: 100%; height: 24px; cursor: pointer;"
-                 data-td-target="#pub_date" data-td-toggle="datetimepicker"></div>
+    <div class="p-3">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label w-100">
+            <input class="mdl-textfield__input" type="text" id="pubGenerateTemplateTitle">
+            <label class="mdl-textfield__label" for="pubGenerateTemplateTitle">
+                Generate Template Title
+            </label>
+        </div>
+        <div class="row">
+            <div class="col-md-6 material-input-group-read-only" style="margin-top: 20px;" id="pub_start_date"
+                 data-td-target-input="nearest" data-td-target-toggle="nearest">
+                <label>PUB Start Date</label>
+                <input class="d-none" type="text" placeholder="MMMM YYYY" data-td-target="#pub_start_date">
+                <input disabled type="text" placeholder="MMMM YYYY" id="pub_start_date_input">
+                <i class="fa-solid fa-calendar"></i>
+                <div style="position: absolute; top: 4px; width: 100%; height: 24px; cursor: pointer;"
+                     data-td-target="#end_date" data-td-toggle="datetimepicker"></div>
+            </div>
+            <div class="col-md-6 material-input-group-read-only" style="margin-top: 20px;" id="pub_end_date"
+                 data-td-target-input="nearest" data-td-target-toggle="nearest">
+                <label>PUB End Date</label>
+                <input class="d-none" type="text" placeholder="MMMM YYYY" data-td-target="#pub_end_date">
+                <input disabled type="text" placeholder="MMMM YYYY" id="pub_end_date_input">
+                <i class="fa-solid fa-calendar"></i>
+                <div style="position: absolute; top: 4px; width: 100%; height: 24px; cursor: pointer;"
+                     data-td-target="#end_date" data-td-toggle="datetimepicker"></div>
+            </div>
         </div>
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label w-100">
             <input class="mdl-textfield__input" type="text" id="postalCode">
@@ -95,14 +112,14 @@
             </label>
         </div>
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label w-100">
-            <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="pubFee">
+            <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="pubFee">
             <label class="mdl-textfield__label" for="pubFee">
                 PUB Total Amount
             </label>
             <span class="mdl-textfield__error">Input is not a number!</span>
         </div>
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label w-100">
-            <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="internetFee">
+            <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="internetFee">
             <label class="mdl-textfield__label" for="internetFee">
                 Internet Total Amount
             </label>
@@ -110,27 +127,27 @@
         </div>
         <div class="row mt-4">
             <div class="col-md-6">
-                <div class="pt-3 pb-3"
+                <div class="pt-4 pb-4"
                      style="text-align: center; background-color: #e6edf3; color: #889caa; font-size: 24px; align-items: center; display: grid; border-radius: 4px 4px 0 0; border-color: #e6edf3; font-weight: 700; font-family: Georgia,serif;">
                     Long-Term
                 </div>
                 <table id="longTermTable"></table>
-                <button type="button" class="btn btn-primary w-100 mt-2 mb-2" data-bs-toggle="modal"
-                        data-bs-target="#longTermDialog" id="btnAddLongTerm" disabled>
+                <button type="button" class="btn btn-primary w-100 mt-2 mb-3" data-bs-toggle="modal"
+                        data-bs-target="#longTermDialog" id="btnAddLongTerm">
                     Add New Long-Term
                 </button>
             </div>
 
             <div class="col-md-6">
-                <div class="pt-3 pb-3"
+                <div class="pt-4 pb-4"
                      style="text-align: center; background-color: #e6edf3; color: #889caa; font-size: 24px; align-items: center; display: grid; border-radius: 4px 4px 0 0; border-color: #e6edf3; font-weight: 700; font-family: Georgia,serif;">
                     Short-Term
                 </div>
                 <div id="shortTermList">
                     <table id="shortTermTable"></table>
-                    <button type="button" class="btn btn-primary w-100 mt-2 mb-2" data-bs-toggle="modal"
+                    <button type="button" class="btn btn-primary w-100 mt-2 mb-3" data-bs-toggle="modal"
                             data-bs-target="#shortTermDialog" id="btnAddShortTerm" disabled>
-                        Add New Long-Term
+                        Add New Short-Term
                     </button>
                 </div>
             </div>
@@ -225,26 +242,31 @@
 
 <script>
     $(document).ready(function () {
-        let minDateForStart;
-        let maxDateForStart;
-        let minDateForEnd;
-        let maxDateForEnd;
-        let pubDate = null
+        let minDateForStart
+        let maxDateForStart
+        let minDateForEnd
+        let maxDateForEnd
+        let pubStartDate = null
+        let pubEndDate = null
         let postalCode = null
         let unitNumber = null
         let pubTotalAmount = null
         let internetAmount = null
-        let pubDateInput = $(`#pub_date_input`)
-        let btnAddLongTerm = $(`#btnAddLongTerm`)
+        let pubGenerateTemplateTitle = null
+        let pubGenerateTemplateTitleInput = $(`#pubGenerateTemplateTitle`)
+        let pubStartDateInput = $(`#pub_start_date_input`)
+        let pubEndDateInput = $(`#pub_end_date_input`)
         let btnShortTerm = $(`#btnAddShortTerm`)
-        let startDate = $(`#start_date`)
-        let endDate = $(`#end_date`)
         let startDateInput = $(`#start_date_input`)
         let endDateInput = $(`#end_date_input`)
         let edtLongTermName = $(`#edtLongTermName`)
         let edtShortTermName = $(`#edtShortTermName`)
         let btnSaveLongTerm = $(`#btnSaveLongTerm`)
         let btnSaveShortTerm = $(`#btnSaveShortTerm`)
+        let pubFeeInput = $(`#pubFee`)
+        let internetFeeInput = $(`#internetFee`)
+        let longTermList = []
+        let shortTermList = []
 
         let App = $.App(false)
         let ApiService = $.ApiService(App)
@@ -263,42 +285,74 @@
             btnSaveShortTerm.attr(`disabled`, true)
         })
 
-        const pubDatePicker = new tempusDominus.TempusDominus(
-            document.getElementById("pub_date"),
+        const pubStartDatePicker = new tempusDominus.TempusDominus(
+            document.getElementById(`pub_start_date`),
             {
                 display: {
                     icons: {
                         previous: `fa-solid fa-chevron-left`,
                         next: `fa-solid fa-chevron-right`,
                         close: `fa-solid fa-xmark`,
-                        clear: `fa-solid fa-trash`
+                        clear: `fa-solid fa-trash`,
+                        today: `fa-solid fa-calendar-day`
                     },
-                    viewMode: 'months',
+                    viewMode: 'calendar',
                     components: {
                         calendar: true,
-                        date: false,
+                        date: true,
                         month: true,
                         year: true,
-                        decades: true,
+                        decades: false,
                         clock: false
                     },
                     theme: 'auto',
                     toolbarPlacement: 'bottom',
-                    keepOpen: false,
-                    buttons: {
-                        today: false,
-                        clear: true,
-                        close: true
-                    }
+                    keepOpen: false
+                },
+                localization: {
+                    format: 'dd MMMM yyyy',
                 },
                 useCurrent: false,
+                restrictions: {
+                    maxDate: new Date()
+                }
+            }
+        )
+        const pubEndDatePicker = new tempusDominus.TempusDominus(
+            document.getElementById(`pub_end_date`),
+            {
+                display: {
+                    icons: {
+                        previous: `fa-solid fa-chevron-left`,
+                        next: `fa-solid fa-chevron-right`,
+                        close: `fa-solid fa-xmark`,
+                        clear: `fa-solid fa-trash`,
+                        today: `fa-solid fa-calendar-day`
+                    },
+                    viewMode: 'calendar',
+                    components: {
+                        calendar: true,
+                        date: true,
+                        month: true,
+                        year: true,
+                        decades: false,
+                        clock: false
+                    },
+                    theme: 'auto',
+                    toolbarPlacement: 'bottom',
+                    keepOpen: false
+                },
                 localization: {
-                    format: 'MMM yyyy',
+                    format: 'dd MMMM yyyy',
+                },
+                useCurrent: false,
+                restrictions: {
+                    maxDate: new Date()
                 }
             }
         )
         const startDatePicker = new tempusDominus.TempusDominus(
-            document.getElementById("start_date"),
+            document.getElementById(`start_date`),
             {
                 display: {
                     icons: {
@@ -320,11 +374,6 @@
                     theme: 'auto',
                     toolbarPlacement: 'bottom',
                     keepOpen: false,
-                    buttons: {
-                        today: true,
-                        clear: true,
-                        close: true
-                    }
                 },
                 localization: {
                     format: 'dd MMMM yyyy',
@@ -333,7 +382,7 @@
             }
         )
         const endDatePicker = new tempusDominus.TempusDominus(
-            document.getElementById("end_date"),
+            document.getElementById(`end_date`),
             {
                 display: {
                     icons: {
@@ -354,12 +403,7 @@
                     },
                     theme: 'auto',
                     toolbarPlacement: 'bottom',
-                    keepOpen: false,
-                    buttons: {
-                        today: true,
-                        clear: true,
-                        close: true
-                    }
+                    keepOpen: false
                 },
                 localization: {
                     format: 'dd MMMM yyyy',
@@ -368,7 +412,7 @@
             }
         )
 
-        const longTermList = $('#longTermTable').grid({
+        const longTermTable = $(`#longTermTable`).grid({
             dataSource: [],
             notFoundText: 'Please add new Long-Term person.',
             primaryKey: 'no',
@@ -382,7 +426,7 @@
                 {
                     field: 'name',
                     title: 'Name',
-                    editor: true
+                    editor: false
                 },
                 {
                     field: '',
@@ -391,15 +435,17 @@
                     icon: 'fa-solid fa-trash',
                     events: {
                         'click': function (e) {
-                            longTermList.removeRow(e.data.id)
-                            longTermList.getAll(true).forEach((data, index) => {
-
-                                longTermList.updateRow(
+                            longTermList = longTermList.filter(data => data.no !== e.data.record.no)
+                            longTermTable.removeRow(e.data.id)
+                            longTermTable.getAll(true).forEach((data, index) => {
+                                let newData = {
+                                    no: index + 1,
+                                    name: data.name
+                                }
+                                longTermList[index] = newData
+                                longTermTable.updateRow(
                                     data.no,
-                                    {
-                                        no: index + 1,
-                                        name: data.name
-                                    }
+                                    newData
                                 )
 
                             })
@@ -409,7 +455,7 @@
             ]
         });
 
-        const shortTermList = $('#shortTermTable').grid({
+        const shortTermTable = $(`#shortTermTable`).grid({
             dataSource: [],
             notFoundText: 'Please add new Short-Term person.',
             primaryKey: 'no',
@@ -423,7 +469,7 @@
                 {
                     field: 'name',
                     title: 'Name',
-                    editor: true
+                    editor: false
                 },
                 {
                     field: 'date',
@@ -438,16 +484,19 @@
                     icon: 'fa-solid fa-trash',
                     events: {
                         'click': function (e) {
-                            shortTermList.removeRow(e.data.id)
-                            shortTermList.getAll(true).forEach((data, index) => {
+                            shortTermList = shortTermList.filter(data => data.no !== e.data.record.no)
+                            shortTermTable.removeRow(e.data.id)
+                            shortTermTable.getAll(true).forEach((data, index) => {
 
-                                shortTermList.updateRow(
+                                let newData = {
+                                    no: index + 1,
+                                    name: data.name,
+                                    date: data.date
+                                }
+                                longTermList[index] = newData
+                                shortTermTable.updateRow(
                                     data.no,
-                                    {
-                                        no: index + 1,
-                                        name: data.name,
-                                        date: data.date
-                                    }
+                                    newData
                                 )
 
                             })
@@ -457,77 +506,108 @@
             ]
         });
 
-        pubDatePicker.subscribe(tempusDominus.Namespace.events.change, (e) => {
-            pubDate = e.date
-            if (e.date !== e.olddate) {
-                shortTermList.clear(true)
-            }
+        pubStartDatePicker.subscribe(tempusDominus.Namespace.events.change, (e) => {
+            pubStartDate = e.date
 
-            pubDateInput.val(``)
+            shortTermTable.clear(true)
+
+            pubStartDateInput.val(``)
             if (e.date != null) {
-                console.log(e.date.toLocaleString('default', {
-                    month: 'long',
-                    year: 'numeric'
-                }))
-                pubDateInput.val(
+                pubStartDateInput.val(
                     e.date.toLocaleString('default', {
-                        month: 'long',
+                        day: `2-digit`,
+                        month: 'short',
                         year: 'numeric'
                     })
                 )
+
+                minDateForStart = new Date(
+                    e.date.getFullYear(),
+                    e.date.getMonth(),
+                    e.date.getDate(),
+                    0,
+                    0,
+                    0,
+                    0
+                )
+                minDateForEnd = minDateForStart
+
+                pubEndDatePicker.updateOptions({
+                    restrictions: {
+                        minDate: minDateForEnd
+                    }
+                })
+
+                startDatePicker.updateOptions({
+                    restrictions: {
+                        minDate: minDateForStart
+                    }
+                })
+                endDatePicker.updateOptions({
+                    restrictions: {
+                        minDate: minDateForStart
+                    }
+                })
             }
 
-            if (e.date == null) {
-                btnAddLongTerm.attr(`disabled`, true)
+            if (pubEndDate == null) {
                 btnShortTerm.attr(`disabled`, true)
-
-                checkInput()
-                return
-            }
-            btnAddLongTerm.removeAttr(`disabled`)
-            btnShortTerm.removeAttr(`disabled`)
-            minDateForStart = new Date(
-                e.date.getFullYear(),
-                e.date.getMonth(),
-                1
-            )
-            maxDateForStart = new Date(
-                e.date.getFullYear(),
-                e.date.getMonth() + 1,
-                0,
-                23,
-                59,
-                59,
-                59
-            )
-
-            minDateForEnd = minDateForStart
-            maxDateForEnd = maxDateForStart
-
-            if (startDate.val() !== `` && endDate.val() !== undefined) {
-                maxDateForStart = endDatePicker.viewDate
+            } else {
+                btnShortTerm.removeAttr(`disabled`)
             }
 
-            if (startDate.val() !== `` && endDate.val() !== undefined) {
-                minDateForEnd = startDatePicker.viewDate
+            checkInput()
+        })
+
+        pubEndDatePicker.subscribe(tempusDominus.Namespace.events.change, (e) => {
+            pubEndDate = e.date
+
+            shortTermTable.clear(true)
+
+            pubEndDateInput.val(``)
+            if (e.date != null) {
+                pubEndDateInput.val(
+                    e.date.toLocaleString('default', {
+                        day: `2-digit`,
+                        month: 'short',
+                        year: 'numeric'
+                    })
+                )
+
+                maxDateForStart = new Date(
+                    e.date.getFullYear(),
+                    e.date.getMonth(),
+                    e.date.getDate(),
+                    23,
+                    59,
+                    59,
+                    59
+                )
+                maxDateForEnd = maxDateForStart
+
+                pubStartDatePicker.updateOptions({
+                    restrictions: {
+                        maxDate: maxDateForStart
+                    }
+                })
+
+                startDatePicker.updateOptions({
+                    restrictions: {
+                        maxDate: maxDateForStart
+                    }
+                })
+                endDatePicker.updateOptions({
+                    restrictions: {
+                        maxDate: maxDateForStart
+                    }
+                })
             }
 
-            startDatePicker.updateOptions({
-                restrictions: {
-                    minDate: minDateForStart,
-                    maxDate: maxDateForStart
-                }
-            })
-
-            endDatePicker.updateOptions({
-                restrictions: {
-                    minDate: minDateForEnd,
-                    maxDate: maxDateForEnd
-                }
-            })
-
-            startDatePicker.dates.clear()
-            endDatePicker.dates.clear()
+            if (pubStartDate == null) {
+                btnShortTerm.attr(`disabled`, true)
+            } else {
+                btnShortTerm.removeAttr(`disabled`)
+            }
 
             checkInput()
         })
@@ -624,18 +704,30 @@
             unitNumber = $(`#unitNumber`).val()
             checkInput()
         })
-        $(`#pubFee`).on(`input`, function () {
-            try {
-                pubTotalAmount = parseInt($(`#pubFee`).val())
-            } catch (e) {
+        pubGenerateTemplateTitleInput.on(`input`, function () {
+            pubGenerateTemplateTitle = pubGenerateTemplateTitleInput.val()
+            checkInput()
+        })
+        pubFeeInput.on(`input`, function () {
+            if ($.isNumeric(pubFeeInput.val())) {
+                try {
+                    pubTotalAmount = parseFloat($(`#pubFee`).val())
+                } catch (e) {
+                    pubTotalAmount = null
+                }
+            } else {
                 pubTotalAmount = null
             }
             checkInput()
         })
-        $(`#internetFee`).on(`input`, function () {
-            try {
-                internetAmount = parseInt($(`#internetFee`).val())
-            } catch (e) {
+        internetFeeInput.on(`input`, function () {
+            if ($.isNumeric(internetFeeInput.val())) {
+                try {
+                    internetAmount = parseFloat($(`#internetFee`).val())
+                } catch (e) {
+                    internetAmount = null
+                }
+            } else {
                 internetAmount = null
             }
             checkInput()
@@ -643,30 +735,31 @@
 
         btnSaveLongTerm.on(`click`, function () {
             if (edtLongTermName.val().length === 0) return
-            longTermList.addRow(
-                {
-                    'no': longTermList.getAll(true).length + 1,
-                    'name': edtLongTermName.val()
-                }
-            )
+            let data = {
+                'no': longTermList.length + 1,
+                'name': edtLongTermName.val()
+            }
+            longTermTable.addRow(data)
+            longTermList.push(data)
             longTermDialog.hide()
+            checkInput()
         })
         btnSaveShortTerm.on(`click`, function () {
-            shortTermList.addRow(
-                {
-                    'no': shortTermList.getAll(true).length + 1,
-                    'name': edtShortTermName.val(),
-                    'date': startDatePicker.viewDate.toLocaleString('default', {
-                        day: `2-digit`,
-                        month: '2-digit',
-                        year: 'numeric'
-                    }).replaceAll(`/`, `-`) + '\n' + endDatePicker.viewDate.toLocaleString('default', {
-                        day: `2-digit`,
-                        month: '2-digit',
-                        year: 'numeric'
-                    }).replaceAll(`/`, `-`)
-                }
-            )
+            let data = {
+                'no': shortTermList.length + 1,
+                'name': edtShortTermName.val(),
+                'date': startDatePicker.viewDate.toLocaleString('default', {
+                    day: `2-digit`,
+                    month: '2-digit',
+                    year: 'numeric'
+                }).replaceAll(`/`, `-`) + '\n' + endDatePicker.viewDate.toLocaleString('default', {
+                    day: `2-digit`,
+                    month: '2-digit',
+                    year: 'numeric'
+                }).replaceAll(`/`, `-`)
+            }
+            shortTermTable.addRow(data)
+            shortTermList.push(data)
             shortTermDialog.hide()
         })
 
@@ -686,30 +779,20 @@
                 )
                 return
             }
-            if (longTermList.getAll(true).length <= 1) {
-                App.showPopup(
-                    "Error",
-                    "Long-Term user count should not be less than equal 1.",
-                    [
-                        {
-                            id: 'okay',
-                            type: 'default',
-                            text: 'Okay'
-                        }
-                    ]
-                )
-                return
-            }
+
             let data = {
-                pub_date: pubDate,
+                generate_title: pubGenerateTemplateTitle,
+                pub_start_date: pubStartDate,
+                pub_end_date: pubEndDate,
                 pub_amount: pubTotalAmount,
                 internet_amount: internetAmount,
                 postal_code: postalCode,
                 unit_number: unitNumber,
-                long_term_list: longTermList.getAll(true),
-                short_term_list: shortTermList.getAll(true)
+                long_term_list: longTermList,
+                short_term_list: shortTermList
             }
-            if (shortTermList.getAll(true).length === 0) {
+
+            if (shortTermList.length === 0) {
                 App.showPopup(
                     "Warning",
                     "Are you sure to Submit without adding Short-Term?",
@@ -759,7 +842,7 @@
         })
 
         function checkInput() {
-            if (pubDate != null && postalCode !== `` && postalCode != null && unitNumber !== `` && unitNumber != null && pubTotalAmount != null && !isNaN(pubTotalAmount) && internetAmount != null && !isNaN(internetAmount)) {
+            if (longTermList.length > 1 && pubGenerateTemplateTitle != null && pubGenerateTemplateTitle !== `` && postalCode !== `` && postalCode != null && unitNumber !== `` && unitNumber != null && pubTotalAmount != null && !isNaN(pubTotalAmount) && internetAmount != null && !isNaN(internetAmount)) {
                 App.enableClosingConfirmation()
                 App.MainButton.show()
             } else {

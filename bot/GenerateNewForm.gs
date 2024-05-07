@@ -23,12 +23,49 @@ function generateForTelegramUser(telegram, userId, data) {
 function testTemplate() {
   Tamotsu.initialize()
 
-  let sheetName = new Date().toLocaleDateString(
-    'en-GB',
+  let data = {
+    generate_title: 'April 2024',
+    pub_start_date: `01-04-2024`,
+    pub_end_date: `19-04-2024`,
+    pub_amount: 1,
+    internet_amount: 1,
+    postal_code: '730863',
+    unit_number: '13',
+    long_term_list:
+      [
+        { no: '1', name: 'Name One' },
+        { no: '2', name: 'Name Two' },
+        { no: '3', name: 'Name Three' },
+        { no: '4', name: 'Name Four' },
+        { no: '5', name: 'Name Five' },
+        { no: '6', name: 'Name Six' }
+      ],
+    short_term_list:
+      [
+        {
+          no: '1',
+          name: 'Short Term One',
+          date: '01-04-2024\n02-04-2024'
+        },
+        {
+          no: '2',
+          name: 'Short Term Two',
+          date: '01-04-2024\n02-04-2024'
+        }
+      ]
+  }
+
+  let sheetName = `${stringToDate(data.pub_start_date, "dd-mm-yyyy", `-`).toLocaleDateString(
+    `en-GB`,
     {
-      month: 'long', year: 'numeric'
+      day: `2-digit`, month: `long`, year: `numeric`
     }
-  )
+  )} - ${stringToDate(data.pub_end_date, "dd-mm-yyyy", `-`).toLocaleDateString(
+    `en-GB`,
+    {
+      day: `2-digit`, month: `long`, year: `numeric`
+    }
+  )}~[UserName]`
 
   if (SpreadsheetApp.openById(PropertiesService.getScriptProperties().getProperty("SPREAD_SHEET_ID")).getSheetByName(sheetName) == null) {
     let sheet = SpreadsheetApp.getActive().insertSheet()
@@ -38,35 +75,7 @@ function testTemplate() {
 
   let range = generateTemplate(
     sheetName,
-    {
-      pub_date: '2024-04-28T06:32:55.817Z',
-      pub_amount: 1,
-      internet_amount: '1',
-      postal_code: '730863',
-      unit_number: '13',
-      long_term_list:
-        [
-          { no: '1', name: 'Name One' },
-          { no: '2', name: 'Name Two' },
-          { no: '3', name: 'Name Three' },
-          { no: '4', name: 'Name Four' },
-          { no: '5', name: 'Name Five' },
-          { no: '6', name: 'Name Six' }
-        ],
-      short_term_list:
-        [
-          {
-            no: '1',
-            name: 'Short Term One',
-            date: '01-04-2024\n02-04-2024'
-          },
-          {
-            no: '2',
-            name: 'Short Term Two',
-            date: '01-04-2024\n02-04-2024'
-          }
-        ]
-    }
+    data
   )
 
   saveImageToGoogleDrive(sheetName, range)
@@ -77,16 +86,15 @@ function generateTemplate(sheetName, data) {
   let templateSheet = SpreadsheetApp.openById(sheetId).getSheetByName("TelegramTemplate")
   let copySheet = SpreadsheetApp.openById(sheetId).getSheetByName(sheetName)
 
-  let date = new Date(data.pub_date)
   let totalDay = 10
   if (sheetName.toLowerCase() != "Template".toLowerCase()) {
-    totalDay = parseInt(new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate())
+    totalDay = dateRange(data.pub_start_date, data.pub_end_date).length
   }
 
   let longTermList = data.long_term_list ?? []
   let shortTermList = data.short_term_list ?? []
 
-  let total = data.pub_amount + data.internet_amount
+  let total = parseFloat(data.pub_amount) + parseFloat(data.internet_amount)
   let numberOfPpl = longTermList.length + shortTermList.length
   let perPaxFee = total / (numberOfPpl * totalDay)
   let shortTermTotalFee = 0
@@ -96,12 +104,6 @@ function generateTemplate(sheetName, data) {
     return day
   }).flatMap((arr) => arr.map(date => date.getTime())).filter((date, index, array) => array.indexOf(date) === index).length
   let longTermFee = (total - shortTermTotalFee) / (totalDay * longTermList.length)
-  let header = date.toLocaleDateString(
-    'en-GB',
-    {
-      month: 'long', year: 'numeric'
-    }
-  )
 
   // setting column width
   settingSheetColumn(templateSheet, copySheet)
@@ -112,7 +114,18 @@ function generateTemplate(sheetName, data) {
   // display title
   displayTitleForGenerateMonth(
     copySheet,
-    header
+    data.generate_title,
+    `PUB Calculate from ${stringToDate(data.pub_start_date, "dd-mm-yyyy", `-`).toLocaleDateString(
+      `en-GB`,
+      {
+        day: `2-digit`, month: `long`, year: `numeric`
+      }
+    )} to ${stringToDate(data.pub_end_date, "dd-mm-yyyy", `-`).toLocaleDateString(
+      `en-GB`,
+      {
+        day: `2-digit`, month: `long`, year: `numeric`
+      }
+    )}`
   )
 
   // display right top summary
@@ -144,7 +157,7 @@ function generateTemplate(sheetName, data) {
   )
 
   // display fee summary
-  displayFeeSummary(copySheet, header, data.pub_amount, data.internet_amount)
+  displayFeeSummary(copySheet, data.generate_title, data.pub_amount, data.internet_amount)
 
   // display summary
   displaySummary(copySheet, perPaxFee, longTermList.length, shortTermList.length)
@@ -154,12 +167,12 @@ function generateTemplate(sheetName, data) {
 
   // display long term ppl
   let lastPositionForLongTerm = 18
-  if(longTermList.length > 0) {
-     lastPositionForLongTerm =displayLongTermPpl(
-    copySheet,
-    longTermList,
-    longTermFee * totalDay
-  )
+  if (longTermList.length > 0) {
+    lastPositionForLongTerm = displayLongTermPpl(
+      copySheet,
+      longTermList,
+      longTermFee * totalDay
+    )
   }
 
   // display short term ppl
@@ -193,14 +206,22 @@ function settingSheetRow(original, copySheet) {
   }
 }
 
-function displayTitleForGenerateMonth(sheet, header) {
-  let titleCell = sheet.getRange("C3:O6")
+function displayTitleForGenerateMonth(sheet, header, pubCalculateDate) {
+  let titleCell = sheet.getRange(`C3:O6`)
   titleCell.merge()
   titleCell.setVerticalAlignment(ALIGN_MIDDLE)
   titleCell.setFontWeight(FONT_STYLE_BOLD)
   titleCell.setFontSize(46)
   titleCell.setFontFamily(FONT_GEORGIA)
   titleCell.setValue(`PUB for ${header}`)
+
+  titleCell = sheet.getRange(`C7:O7`)
+  titleCell.merge()
+  titleCell.setVerticalAlignment(ALIGN_MIDDLE)
+  titleCell.setFontWeight(FONT_STYLE_BOLD)
+  titleCell.setFontSize(12)
+  titleCell.setFontFamily(FONT_MONTSERRAT)
+  titleCell.setValue(pubCalculateDate)
 }
 
 function displayRightTopSummary(sheet, positionStart, displayData) {

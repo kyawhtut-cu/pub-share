@@ -840,7 +840,21 @@
                         "data": data
                     },
                     function (response) {
-                        console.log(response)
+                        App.disableClosingConfirmation()
+                        App.showPopup(
+                            "Success",
+                            response,
+                            [
+                                {
+                                    id: 'okay',
+                                    type: 'default',
+                                    text: 'Okay'
+                                }
+                            ],
+                            function (button_id) {
+                                if (button_id === `okay`) App.close()
+                            }
+                        )
                     }
                 )
             }

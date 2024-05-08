@@ -13,10 +13,6 @@ function createTriggerForGenerate(user_id, data) {
   } else {
     user = new UserTable().updateUserCredit(telegram.chat_id, -1)
 
-    response = telegram.sendMessage({
-      text: `သင်၏ အချက်လက်များကို ရရှိပါပြီ။ မကြာခင် စတင်ဆောင်ရွက်ပါမည်။ ပြီးဆုံးပါက ပြန်လည်ပို့ဆောင်ပေးပါမည်။`
-    })
-
     let startDate = new Date()
     let nextDate = new Date(startDate.getTime() + 60 * 1000)
     if (nextDate.getSeconds() <= 45) {
@@ -43,6 +39,12 @@ function runGenerateForTrigger(event) {
 
   let telegram = createTelegramApp(PropertiesService.getScriptProperties().getProperty("TELEGRAM_BOT_ID"))
   telegram.chat_id = data[`user_id`]
+
+  let response = telegram.sendMessage({
+    text: `သင်၏ အချက်လက်များကို စတင်လုပ်ဆောင်နေပါသည်။ ပြီးဆုံးပါ ပြန်လည်အကြောင်းကြားပေးပါမည်။`
+  })
+
+  console.log(response)
 
   generateForTelegramUser(telegram, telegram.chat_id, data[`data`])
 

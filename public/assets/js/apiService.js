@@ -8,7 +8,8 @@
         App = app
 
         return {
-            submitData
+            submitData,
+            getSaveData
         }
     }
 
@@ -20,7 +21,22 @@
                 checkNetworkResponse(response, callback)
             }
         })
+    }
 
+    const getSaveData = (data, callback) => {
+        Api.sheet({
+            route: `get_save_data`,
+            payload: data,
+            callback: function (response) {
+                toggleAnimation(response.status === `loading`, response.status === `error`)
+
+                if (response.status === `success`) {
+                    callback(response.data)
+                } else if (response.status === `error` && response.status_code !== 401) {
+                    App.showAlert(response.error)
+                }
+            }
+        })
     }
 
     const toggleAnimation = (isLoading, isError) => {

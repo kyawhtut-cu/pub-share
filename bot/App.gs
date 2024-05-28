@@ -60,12 +60,14 @@ let doPost = (e) => {
   let route = new Route()
 
   route.authMiddleware(function (request) {
-    if (request.route.startsWith("submit_generate_data")) {
+    if (request.route.startsWith(`submit_generate_data`) || request.route.startsWith(`get_save_data`)) {
       return checkUserAuth(request)
     } else request
   })
 
   route.on(`submit_generate_data`, SubmissionController.invoke, true)
+
+  route.on(`get_save_data`, GetSaveDataController.invoke, true)
 
   // Register the route with request
   request.register(route)

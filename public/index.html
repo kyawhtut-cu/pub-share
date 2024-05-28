@@ -34,11 +34,11 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
         function setThemeClass() {
-            document.documentElement.className = Telegram.WebApp.colorScheme;
+            document.documentElement.className = Telegram.WebApp.colorScheme
         }
 
-        Telegram.WebApp.onEvent('themeChanged', setThemeClass);
-        setThemeClass();
+        Telegram.WebApp.onEvent('themeChanged', setThemeClass)
+        setThemeClass()
     </script>
     <style>
         .list-group-item:first-child {
@@ -73,7 +73,7 @@
         Welcome From PUB Share - SG
     </div>
     <div class="p-3">
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label w-100">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label w-100" id="divGenerateTemplateTitle">
             <input class="mdl-textfield__input" type="text" id="pubGenerateTemplateTitle">
             <label class="mdl-textfield__label" for="pubGenerateTemplateTitle">
                 Generate Template Title
@@ -82,30 +82,31 @@
         <div class="row">
             <div class="col-md-6 material-input-group-read-only" style="margin-top: 20px;" id="pub_start_date"
                  data-td-target-input="nearest" data-td-target-toggle="nearest">
-                <label>PUB Start Date</label>
-                <input class="d-none" type="text" placeholder="MMMM YYYY" data-td-target="#pub_start_date">
-                <input disabled type="text" placeholder="MMMM YYYY" id="pub_start_date_input">
+                <input type="text" id="pubStartDateInput" placeholder="MMMM YYYY" data-tg-target="#pub_start_date"
+                       readonly
+                       onfocus="this.blur()">
+                <label for="pubStartDateInput">PUB Start Date</label>
                 <i class="fa-solid fa-calendar"></i>
                 <div style="position: absolute; top: 4px; width: 100%; height: 24px; cursor: pointer;"
                      data-td-target="#end_date" data-td-toggle="datetimepicker"></div>
             </div>
             <div class="col-md-6 material-input-group-read-only" style="margin-top: 20px;" id="pub_end_date"
                  data-td-target-input="nearest" data-td-target-toggle="nearest">
-                <label>PUB End Date</label>
-                <input class="d-none" type="text" placeholder="MMMM YYYY" data-td-target="#pub_end_date">
-                <input disabled type="text" placeholder="MMMM YYYY" id="pub_end_date_input">
+                <input type="text" id="pubEndDateInput" placeholder="MMMM YYYY" data-td-target="#pub_end_date" readonly
+                       onfocus="this.blur()">
+                <label for="pubEndDateInput">PUB End Date</label>
                 <i class="fa-solid fa-calendar"></i>
                 <div style="position: absolute; top: 4px; width: 100%; height: 24px; cursor: pointer;"
                      data-td-target="#end_date" data-td-toggle="datetimepicker"></div>
             </div>
         </div>
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label w-100">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label w-100" id="divPostalCode">
             <input class="mdl-textfield__input" type="text" id="postalCode">
             <label class="mdl-textfield__label" for="postalCode">
                 Postal Code
             </label>
         </div>
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label w-100">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label w-100" id="divUnitNumber">
             <input class="mdl-textfield__input" type="text" id="unitNumber">
             <label class="mdl-textfield__label" for="unitNumber">
                 Unit Number
@@ -152,6 +153,11 @@
                 </div>
             </div>
         </div>
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="saveForNextTime"
+               id="labelSaveForNextTime">
+            <input type="checkbox" id="saveForNextTime" class="mdl-checkbox__input">
+            <span class="mdl-checkbox__label">Save information for next time.</span>
+        </label>
     </div>
 </div>
 
@@ -195,18 +201,17 @@
                 </div>
                 <div class="material-input-group-read-only" style="margin-top: 20px;" id="start_date"
                      data-td-target-input="nearest" data-td-target-toggle="nearest">
-                    <label>Start Date</label>
-                    <input class="d-none" type="text" placeholder="MMMM YYYY" data-td-target="#start_date">
-                    <input disabled type="text" placeholder="MMMM YYYY" id="start_date_input">
+                    <label for="startDateInput">Start Date</label>
+                    <input type="text" id="startDateInput" placeholder="MMMM YYYY" data-tg-target="#start_date" readonly
+                           onfocus="this.blur()">
                     <i class="fa-solid fa-calendar"></i>
                     <div style="position: absolute; top: 4px; width: 100%; height: 24px; cursor: pointer;"
                          data-td-target="#start_date" data-td-toggle="datetimepicker"></div>
                 </div>
                 <div class="material-input-group-read-only mt-5" id="end_date" data-td-target-input="nearest"
                      data-td-target-toggle="nearest">
-                    <label>End Date</label>
-                    <input class="d-none" type="text" placeholder="MMMM YYYY" data-td-target="#end_date">
-                    <input disabled type="text" placeholder="MMMM YYYY" id="end_date_input">
+                    <label for="endDateInput">End Date</label>
+                    <input type="text" id="endDateInput" placeholder="MMMM YYYY" data-tg-target="#end_date" readonly onfocus="this.blur()">
                     <i class="fa-solid fa-calendar"></i>
                     <div style="position: absolute; top: 4px; width: 100%; height: 24px; cursor: pointer;"
                          data-td-target="#end_date" data-td-toggle="datetimepicker"></div>
@@ -254,11 +259,9 @@
         let internetAmount = null
         let pubGenerateTemplateTitle = null
         let pubGenerateTemplateTitleInput = $(`#pubGenerateTemplateTitle`)
-        let pubStartDateInput = $(`#pub_start_date_input`)
-        let pubEndDateInput = $(`#pub_end_date_input`)
+        let postalCodeInput = $(`#postalCode`)
+        let unitNumberInput = $(`#unitNumber`)
         let btnShortTerm = $(`#btnAddShortTerm`)
-        let startDateInput = $(`#start_date_input`)
-        let endDateInput = $(`#end_date_input`)
         let edtLongTermName = $(`#edtLongTermName`)
         let edtShortTermName = $(`#edtShortTermName`)
         let btnSaveLongTerm = $(`#btnSaveLongTerm`)
@@ -453,7 +456,7 @@
                     }
                 }
             ]
-        });
+        })
 
         const shortTermTable = $(`#shortTermTable`).grid({
             dataSource: [],
@@ -504,22 +507,16 @@
                     }
                 }
             ]
-        });
+        })
+
+        getSaveData()
 
         pubStartDatePicker.subscribe(tempusDominus.Namespace.events.change, (e) => {
             pubStartDate = e.date
 
             shortTermTable.clear(true)
 
-            pubStartDateInput.val(``)
             if (e.date != null) {
-                pubStartDateInput.val(
-                    e.date.toLocaleString('default', {
-                        day: `2-digit`,
-                        month: 'short',
-                        year: 'numeric'
-                    })
-                )
 
                 minDateForStart = new Date(
                     e.date.getFullYear(),
@@ -564,15 +561,7 @@
 
             shortTermTable.clear(true)
 
-            pubEndDateInput.val(``)
             if (e.date != null) {
-                pubEndDateInput.val(
-                    e.date.toLocaleString('default', {
-                        day: `2-digit`,
-                        month: 'short',
-                        year: 'numeric'
-                    })
-                )
 
                 maxDateForStart = new Date(
                     e.date.getFullYear(),
@@ -614,17 +603,6 @@
 
         startDatePicker.subscribe(tempusDominus.Namespace.events.change, (e) => {
 
-            startDateInput.val(``)
-            if (e.date != null) {
-                startDateInput.val(
-                    e.date.toLocaleString('default', {
-                        day: `2-digit`,
-                        month: 'short',
-                        year: 'numeric'
-                    })
-                )
-            }
-
             if (e.date !== undefined) {
                 endDatePicker.updateOptions({
                     restrictions: {
@@ -647,17 +625,6 @@
         })
 
         endDatePicker.subscribe(tempusDominus.Namespace.events.change, (e) => {
-
-            endDateInput.val(``)
-            if (e.date != null) {
-                endDateInput.val(
-                    e.date.toLocaleString('default', {
-                        day: `2-digit`,
-                        month: 'short',
-                        year: 'numeric'
-                    })
-                )
-            }
 
             if (e.date !== undefined) {
                 startDatePicker.updateOptions({
@@ -696,12 +663,12 @@
             }
             checkInput()
         })
-        $(`#postalCode`).on(`input`, function () {
-            postalCode = $(`#postalCode`).val()
+        postalCodeInput.on(`input`, function () {
+            postalCode = postalCodeInput.val()
             checkInput()
         })
-        $(`#unitNumber`).on(`input`, function () {
-            unitNumber = $(`#unitNumber`).val()
+        unitNumberInput.on(`input`, function () {
+            unitNumber = unitNumberInput.val()
             checkInput()
         })
         pubGenerateTemplateTitleInput.on(`input`, function () {
@@ -797,7 +764,8 @@
                 postal_code: postalCode,
                 unit_number: unitNumber,
                 long_term_list: longTermList,
-                short_term_list: shortTermList
+                short_term_list: shortTermList,
+                save_data: $(`#saveForNextTime`).is(':checked')
             }
 
             if (shortTermList.length === 0) {
@@ -871,6 +839,40 @@
                 App.disableClosingConfirmation()
                 App.MainButton.hide()
             }
+        }
+
+        function getSaveData() {
+            ApiService.getSaveData(
+                {
+                    "user_id": App.userId
+                },
+                function (response) {
+                    pubGenerateTemplateTitle = response.generate_title
+                    postalCode = response.postal_code
+                    unitNumber = response.unit_number
+                    if (pubGenerateTemplateTitle) {
+                        $(`#labelSaveForNextTime`).addClass(`is-checked`)
+                        $(`#saveForNextTime`).attr(`checked`, true)
+                        $(`#divGenerateTemplateTitle`).addClass(`is-dirty`)
+                        pubGenerateTemplateTitleInput.val(pubGenerateTemplateTitle)
+                    }
+                    if (postalCode) {
+                        $(`#divPostalCode`).addClass(`is-dirty`)
+                        postalCodeInput.val(postalCode)
+                    }
+                    if (unitNumber) {
+                        $(`#divUnitNumber`).addClass(`is-dirty`)
+                        unitNumberInput.val(unitNumber)
+                    }
+                    if (response.long_term_list) {
+                        response.long_term_list.forEach(data => {
+                            longTermTable.addRow(data)
+                            longTermList.push(data)
+                        })
+                    }
+                    checkInput()
+                }
+            )
         }
     })
 </script>

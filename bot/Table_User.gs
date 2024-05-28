@@ -51,4 +51,19 @@ class UserTable {
 
     return user
   }
+
+  setUserSaveData(userId, data) {
+    let user = this.Table.where({ user_id: parseInt(userId) }).first()
+
+    if (user != null) {
+      user.save_data = JSON.stringify(data)
+      user.updated_date = new Date()
+      user.save()
+    }
+
+    delete user.row_
+    delete user.errors
+
+    return user
+  }
 }

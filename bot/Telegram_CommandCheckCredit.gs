@@ -20,8 +20,14 @@ class TelegramCommandCheckCredit {
 
       let user = new UserTable().getUserById(telegram.chat_id)
 
+      let credit = user.credit
+
+      if (credit == -1) {
+        credit = 0
+      }
+
       response = telegram.sendMessage({
-        text: `<b>Credit</b> - ${user.credit}`,
+        text: `<b>Credit</b> - ${credit}`,
       })
 
       response = telegram.setMyCommands(

@@ -14,12 +14,16 @@ let doGet = (e) => {
   let route = new Route()
 
   route.authMiddleware(function (request) {
-    if (request.route.startsWith("submit_generate_data")) {
+    if (request.route.startsWith(`submit_generate_data`) || request.route.startsWith(`get_save_data`)) {
       return checkUserAuth(request)
     } else request
   })
 
   route.on(`submit_generate_data`, SubmissionController.invoke, true)
+
+  route.on(`get_save_data`, GetSaveDataController.invoke, true)
+
+  route.on(`submit_test_api`, TestApiController.invoke, false)
 
   // Register the route with request
   request.register(route)
@@ -60,14 +64,12 @@ let doPost = (e) => {
   let route = new Route()
 
   route.authMiddleware(function (request) {
-    if (request.route.startsWith(`submit_generate_data`) || request.route.startsWith(`get_save_data`)) {
+    if (request.route.startsWith("submit_generate_data")) {
       return checkUserAuth(request)
     } else request
   })
 
   route.on(`submit_generate_data`, SubmissionController.invoke, true)
-
-  route.on(`get_save_data`, GetSaveDataController.invoke, true)
 
   // Register the route with request
   request.register(route)
@@ -82,9 +84,11 @@ let testDoPostParameter = () => {
       payload: JSON.stringify({
         "user_id": 5440573899,
         "data": {
-          pub_date: '2024-04-28T06:32:55.817Z',
+          generate_title: 'April 2024',
+          pub_start_date: `20-02-2025`,
+          pub_end_date: `19-03-2025`,
           pub_amount: 1,
-          internet_amount: '1',
+          internet_amount: 1,
           postal_code: '730863',
           unit_number: '13',
           long_term_list:

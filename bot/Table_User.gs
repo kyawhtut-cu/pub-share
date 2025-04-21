@@ -26,7 +26,7 @@ class UserTable {
       user_id: userId,
       user_name: userName,
       user_display_name: userDisplayName,
-      credit: 1,
+      credit: 2,
       created_date: new Date(),
       updated_date: new Date()
     })

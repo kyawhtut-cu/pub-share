@@ -1,4 +1,5 @@
 function generateForTelegramUser(telegram, userId, data) {
+
   let sheetName = `${stringToDate(data.pub_start_date, "dd-mm-yyyy", `-`).toLocaleDateString(
     `en-GB`,
     {
@@ -22,16 +23,21 @@ function generateForTelegramUser(telegram, userId, data) {
 
   let range = generateTemplate(sheetName, data)
 
-  sendImageToTelegram(telegram, sheetName, range, data)
+  // nutrient, iLovePdf
+  let type = `nutrient`
+  if (user.credit >= 0) {
+    type = `iLovePdf`
+  }
+  Export.sendToTelegram(telegram, type, sheetName, range, data)
 }
 
-function testTemplate() {
+function testTemplate(telegram) {
   Tamotsu.initialize()
 
   let data = {
     generate_title: 'April 2024',
-    pub_start_date: `01-04-2024`,
-    pub_end_date: `19-04-2024`,
+    pub_start_date: `20-02-2025`,
+    pub_end_date: `19-03-2025`,
     pub_amount: 1,
     internet_amount: 1,
     postal_code: '730863',
@@ -47,16 +53,16 @@ function testTemplate() {
       ],
     short_term_list:
       [
-        {
-          no: '1',
-          name: 'Short Term One',
-          date: '01-04-2024\n02-04-2024'
-        },
-        {
-          no: '2',
-          name: 'Short Term Two',
-          date: '01-04-2024\n02-04-2024'
-        }
+        // {
+        //   no: '1',
+        //   name: 'Short Term One',
+        //   date: '01-04-2024\n02-04-2024'
+        // },
+        // {
+        //   no: '2',
+        //   name: 'Short Term Two',
+        //   date: '01-04-2024\n02-04-2024'
+        // }
       ]
   }
 
@@ -83,7 +89,8 @@ function testTemplate() {
     data
   )
 
-  saveImageToGoogleDrive(sheetName, range)
+  // nutrient, iLovePdf
+  Export.sendToTelegram(telegram, `iLovePdf`, sheetName, range, data)
 }
 
 function generateTemplate(sheetName, data) {
@@ -190,13 +197,16 @@ function generateTemplate(sheetName, data) {
     )
   }
 
-  let range = `B2:U${lastPositionForLongTerm}`
+  let lastRange = lastPositionForLongTerm
 
   if (lastPositionForShortTerm > lastPositionForLongTerm) {
-    range = `B2:U${lastPositionForShortTerm}`
+    lastRange = lastPositionForShortTerm
   }
 
-  return range
+  // display watermark
+  displayWaterMark(copySheet, lastRange - 1)
+
+  return `B2:U${lastRange}`
 }
 
 function settingSheetColumn(original, copySheet) {
@@ -677,4 +687,16 @@ function displayShortTermPpl(sheet, peopleList, fee) {
   cell.setBorder(true, false, true, true, false, false, DEFAULT_BORDER_COLOR, SpreadsheetApp.BorderStyle.SOLID)
 
   return positionStart + 1
+}
+
+function displayWaterMark(sheet, positionStart) {
+  let titleCell = sheet.getRange(`Q${positionStart}:T${positionStart}`)
+  titleCell.merge()
+  titleCell.setHorizontalAlignment(ALIGN_RIGHT)
+  titleCell.setVerticalAlignment(ALIGN_MIDDLE)
+  titleCell.setFontWeight(FONT_STYLE_BOLD)
+  titleCell.setFontStyle(FONT_STYLE_ITALIC)
+  titleCell.setFontSize(11)
+  titleCell.setFontColor("#cc4224")
+  titleCell.setValue(`PUB Share - SG [Bot]`)
 }

@@ -29,6 +29,7 @@ function stringToDate(_date, _format, _delimiter) {
 const FONT_GEORGIA = "Georgia"
 const FONT_MONTSERRAT = "Montserrat"
 const FONT_STYLE_BOLD = "bold"
+const FONT_STYLE_ITALIC = "italic"
 const ALIGN_LEFT = "left"
 const ALIGN_RIGHT = "right"
 const ALIGN_MIDDLE = "middle"

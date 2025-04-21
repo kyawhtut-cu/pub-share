@@ -1,9 +1,9 @@
 class PDF2PNGUserTable {
 
-  constructor() {
+  constructor(tableName) {
     this.Table = Tamotsu.Table.define(
       {
-        sheetName: `PDF2PNG`,
+        sheetName: tableName,
         idColumn: `user_name`,
         autoIncrement: false,
       }

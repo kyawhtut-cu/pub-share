@@ -8,7 +8,8 @@
         userId: null,
         MainButton: Telegram.WebApp.MainButton,
         BackButton: Telegram.WebApp.BackButton,
-        isSupportedTelegram: Telegram.WebApp.platform !== `unknown`
+        isSupportedTelegram: Telegram.WebApp.platform !== `unknown`,
+        version: '1.0.0'
     }
 
     jQuery.App = function (debug = false) {

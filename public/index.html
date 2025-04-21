@@ -757,7 +757,8 @@
 				unit_number: unitNumber,
 				long_term_list: longTermList,
 				short_term_list: shortTermList,
-				save_data: $(`#saveForNextTime`).is(':checked')
+				save_data: $(`#saveForNextTime`).is(':checked'),
+				version: App.version
 			}
 
 			if (shortTermList.length === 0) {

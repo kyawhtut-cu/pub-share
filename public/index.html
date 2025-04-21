@@ -69,9 +69,7 @@
 
 <div style="padding-bottom: 76px;">
 	<div id="header"
-		 style="height: 160px; text-align: center; color: white; font-size: 2rem; align-items: center; display: grid;">
-		Welcome From PUB Share - SG
-	</div>
+		 style="height: 160px; text-align: center; color: white; font-size: 2rem; align-items: center; display: grid;"></div>
 	<div class="p-3">
 		<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label w-100" id="divGenerateTemplateTitle">
 			<input class="mdl-textfield__input" type="text" id="pubGenerateTemplateTitle">
@@ -273,6 +271,8 @@
 
 		let App = $.App(false)
 		let ApiService = $.ApiService(App)
+
+		$('#header').append(`Welcome From PUB Share - SG<br><br>version - ${App.version}`)
 
 		let longTermDialog = new bootstrap.Modal(`#longTermDialog`)
 		document.getElementById(`longTermDialog`).addEventListener(`show.bs.modal`, _ => {
@@ -715,15 +715,7 @@
 			let data = {
 				'no': shortTermList.length + 1,
 				'name': edtShortTermName.val(),
-				'date': startDatePicker.viewDate.toLocaleString('default', {
-					day: `2-digit`,
-					month: '2-digit',
-					year: 'numeric'
-				}).replaceAll(`/`, `-`) + '\n' + endDatePicker.viewDate.toLocaleString('default', {
-					day: `2-digit`,
-					month: '2-digit',
-					year: 'numeric'
-				}).replaceAll(`/`, `-`)
+				'date': formatDate(startDatePicker.viewDate) + '\n' + formatDate(endDatePicker.viewDate)
 			}
 			shortTermTable.addRow(data)
 			shortTermList.push(data)
